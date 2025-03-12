@@ -1,0 +1,31 @@
+[
+    {
+      "serviceName": "Plumbers",       
+      "imagePath": "assets/images/plumber.jpg",
+      "providerName":"Michel smith",
+      "rating":"3.5",
+      "charge":"Rs 330/hr"
+    },
+    {
+      "serviceName": "Home clean",       
+      "imagePath": "assets/images/home_cleaner.jpg",
+      "providerName":"Michel John",
+      "rating":"3.5",
+      "charge":"Rs 350/hr"
+    },
+    {
+      "serviceName": "Plumbers",       
+      "imagePath": "assets/images/plumber.jpg",
+      "providerName":"John carter",
+      "rating":"4.5",
+      "charge":"Rs 250/hr"
+    },
+    {
+      "serviceName": "Electrician",       
+      "imagePath": "assets/images/electrician.jpg",
+      "providerName":"Sammy jaine",
+      "rating":"4.0",
+      "charge":"Rs 310/hr"
+    }
+    
+]

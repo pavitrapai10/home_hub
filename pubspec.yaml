@@ -71,6 +71,8 @@ flutter:
   assets:
     
     - assets/images/
+    - assets/services_list.json
+    - assets/serviceProviderDetails.json
    
 
   # An image asset can refer to one or more resolution-specific "variants", see

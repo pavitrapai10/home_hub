@@ -1,0 +1,31 @@
+[
+    {
+      "serviceName": "Plumbers",       
+      "imagePath": "assets/images/plumber.jpg"
+    },
+    {
+      "serviceName": "Electricians",       
+      "imagePath": "assets/images/electrician.jpg"
+    },
+    {
+      "serviceName": "Painters",       
+      "imagePath": "assets/images/painter.jpg"
+    },
+    {
+      "serviceName": "Carpenters",       
+      "imagePath": "assets/images/carpenter.jpg"
+    },
+    {
+      "serviceName": "Home Cleaning",       
+      "imagePath": "assets/images/home_cleaner.jpg"
+    },
+    {
+      "serviceName": "Car Washers",       
+      "imagePath": "assets/images/painter1.jpg"
+    },
+    {
+      "serviceName": "Car repairing",       
+      "imagePath": "assets/images/electrician.jpg"
+    }
+    
+  ]

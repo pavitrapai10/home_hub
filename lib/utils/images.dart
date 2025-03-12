@@ -15,3 +15,4 @@ const String homeCleaner = "assets/images/home_cleaner.jpg";
 const String painter = "assets/images/painter.jpg";
 const String painter1 = "assets/images/painter1.jpg";
 const String cleaning = "assets/images/cleaning.jpg";
+const String userImage = "assets/images/userImage.jpg";

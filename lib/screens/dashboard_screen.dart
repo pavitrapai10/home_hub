@@ -6,6 +6,7 @@ import '../models/common_model.dart';
 import '../models/services_model.dart';
 import '../utils/images.dart';
 import 'notification_screen.dart';
+import 'services_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -133,138 +134,180 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   /// ✅ Horizontal List with Circular Icons (Home Services)
-  Widget _buildIconList(String title, List<ServicesModel> services) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-          child: Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+Widget _buildIconList(String title, List<ServicesModel> services) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ServiceScreen()),
+                );
+              },
+              child: Text("View All", style: TextStyle(fontSize: 14, color: Colors.blue)),
+            ),
+          ],
         ),
-        SizedBox(
-          height: 100,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: services.length,
-            itemBuilder: (context, index) {
-              var item = services[index];
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedServiceIndex = index;
-                  });
-                },
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 12),
-                      padding: EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: selectedServiceIndex == index ? Colors.black : Colors.grey[200],
-                      ),
-                      child: Icon(
-                        item.serviceIcon,
-                        color: selectedServiceIndex == index ? Colors.white : Colors.black,
-                        size: 30,
-                      ),
+      ),
+      SizedBox(
+        height: 100,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: services.length,
+          itemBuilder: (context, index) {
+            var item = services[index];
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedServiceIndex = index;
+                });
+              },
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 12),
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: selectedServiceIndex == index ? Colors.black : Colors.grey[200],
                     ),
-                    SizedBox(height: 5),
-                    Text(item.serviceName, style: TextStyle(fontSize: 14)),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// ✅ Home Construction Section Using Your Model
-  Widget _buildHomeConstructionSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-          child: Text("Home Construction", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        ),
-        SizedBox(
-          height: 100,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: homeConstruction.length,
-            itemBuilder: (context, index) {
-              var item = homeConstruction[index];
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedConstructionIndex = index;
-                  });
-                },
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 12),
-                      padding: EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: selectedConstructionIndex == index ? Colors.black : Colors.grey[200],
-                      ),
-                      child: IconTheme(
-                        data: IconThemeData(
-                          color: selectedConstructionIndex == index ? Colors.white : Colors.black,
-                        ),
-                        child: item.iconPath!,
-                      ),
+                    child: Icon(
+                      item.serviceIcon,
+                      color: selectedServiceIndex == index ? Colors.white : Colors.black,
+                      size: 30,
                     ),
-                    SizedBox(height: 5),
-                    Text(item.title, style: TextStyle(fontSize: 14)),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// ✅ Horizontal List with Images (Popular Services)
-  Widget _buildImageList(String title) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-          child: Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        ),
-        SizedBox(
-          height: 160,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 3,
-            itemBuilder: (context, index) {
-              var item = serviceProviders[index];
-              return Container(
-                width: 130,
-                margin: EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: AssetImage(item.serviceImage),
-                    fit: BoxFit.cover,
                   ),
-                ),
-                child: Center(
-                  child: Text(item.serviceName, style: TextStyle(color: Colors.white)),
-                ),
-              );
-            },
-          ),
+                  SizedBox(height: 5),
+                  Text(item.serviceName, style: TextStyle(fontSize: 14)),
+                ],
+              ),
+            );
+          },
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
+/// ✅ Home Construction Section
+Widget _buildHomeConstructionSection() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("Home Construction", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ServiceScreen()),
+                );
+              },
+              child: Text("View All", style: TextStyle(fontSize: 14, color: Colors.blue)),
+            ),
+          ],
+        ),
+      ),
+      SizedBox(
+        height: 100,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: homeConstruction.length,
+          itemBuilder: (context, index) {
+            var item = homeConstruction[index];
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedConstructionIndex = index;
+                });
+              },
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 12),
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: selectedConstructionIndex == index ? Colors.black : Colors.grey[200],
+                    ),
+                    child: IconTheme(
+                      data: IconThemeData(
+                        color: selectedConstructionIndex == index ? Colors.white : Colors.black,
+                      ),
+                      child: item.iconPath!,
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Text(item.title, style: TextStyle(fontSize: 14)),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    ],
+  );
+}
+
+/// ✅ Popular Services Section
+Widget _buildImageList(String title) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ServiceScreen()),
+                );
+              },
+              child: Text("View All", style: TextStyle(fontSize: 14, color: Colors.blue)),
+            ),
+          ],
+        ),
+      ),
+      SizedBox(
+        height: 160,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: 3,
+          itemBuilder: (context, index) {
+            var item = serviceProviders[index];
+            return Container(
+              width: 130,
+              margin: EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                  image: AssetImage(item.serviceImage),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Center(
+                child: Text(item.serviceName, style: TextStyle(color: Colors.white)),
+              ),
+            );
+          },
+        ),
+      ),
+    ],
+  );
+}
 }
