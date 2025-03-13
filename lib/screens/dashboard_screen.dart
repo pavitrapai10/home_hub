@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../store/home_store.dart';
 import '../fragments/search_fragment.dart';
-import '../models/common_model.dart';
 import '../models/services_model.dart';
 import '../utils/images.dart';
 import 'notification_screen.dart';
 import 'services_screen.dart';
 import '../fragments/account_fragment.dart';
 import '../models/home_construction_model.dart';
+import '../utils/widgets.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -22,17 +22,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int? selectedConstructionIndex;
 
   final List<Widget> _screens = [
-    Placeholder(), // Replace with actual Home Screen Widget
-    Placeholder(), // Bookings Placeholder
-    Placeholder(), // Chats Placeholder
-    AccountFragment(), // Profile Screen
+    Placeholder(), 
+    Placeholder(), 
+    Placeholder(), 
+    AccountFragment(), 
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  setState(() {
+    _selectedIndex = index;
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             SizedBox(width: 8),
             Text(
-              'TeResuelvo',
+              'Te Resuelvo',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -82,7 +83,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// ✅ Search & Dropdown Section
+                  //search bar dropdown
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
                     child: Row(
@@ -110,7 +111,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
 
-                  /// ✅ Banner Section
+                  //Banner 
                   SizedBox(
                     height: 150,
                     child: PageView(
@@ -121,13 +122,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   SizedBox(height: 10),
 
-                  /// ✅ Home Services Section (Circular Icons)
+                
                   _buildIconList("Home Services", serviceProviders.sublist(0, 5)),
 
-                  /// ✅ Home Construction Section (Circular Icons)
                   _buildHomeConstructionSection(),
 
-                  /// ✅ Popular Services Section (Images)
                   _buildImageList("Popular Services"),
 
                   SizedBox(height: 20),
@@ -135,26 +134,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             )
           : _selectedIndex == 3
-              ? AccountFragment() // ✅ Show Profile Screen
-              : Center(child: Text("Coming Soon")), // ✅ Placeholder for Bookings/Chats
+              ? AccountFragment() 
+            
+              : Center(child: Text("Coming Soon")), 
 
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        showUnselectedLabels: true,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.book), label: "Bookings"),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Chats"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-        ],
+      bottomNavigationBar: CustomBottomNav(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
+    
       ),
     );
   }
 
-  /// ✅ Home Services Section (Circular Icons)
+ 
   Widget _buildIconList(String title, List<ServicesModel> services) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,7 +205,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  /// ✅ Home Construction Section (Circular Icons)
+ 
   Widget _buildHomeConstructionSection() {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,8 +270,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 }
 
 
-
-  /// ✅ Popular Services Section (Images)
   Widget _buildImageList(String title) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

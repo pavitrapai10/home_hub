@@ -14,6 +14,36 @@ InputDecoration commonInputDecoration({String? hintText, Widget? prefixIcon, Wid
   );
 }
 
+
+
+
+class CustomBottomNav extends StatelessWidget {
+  final int selectedIndex;
+  final Function(int) onItemTapped;
+
+  CustomBottomNav({required this.selectedIndex, required this.onItemTapped});
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      currentIndex: selectedIndex,
+      onTap: onItemTapped,
+      showUnselectedLabels: true,
+      selectedItemColor: Colors.blue,
+      unselectedItemColor: Colors.grey,
+      selectedFontSize: 12,   
+      unselectedFontSize: 12, 
+      type: BottomNavigationBarType.fixed, 
+      items: [
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+        BottomNavigationBarItem(icon: Icon(Icons.book), label: "Bookings"),
+        BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Chats"),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+      ],
+    );
+  }
+}
+
 // Widget homeTitleWidget({
 //   String? titleText,
 //   String? viewAllText,

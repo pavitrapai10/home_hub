@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as rootBundle;
 import '../models/services_list.dart';
 import 'service_details_screen.dart';
+import '../utils/widgets.dart';
+import '../fragments/account_fragment.dart';
+import 'dashboard_screen.dart';
 
 class ServiceScreen extends StatefulWidget {
   @override
@@ -12,6 +15,7 @@ class ServiceScreen extends StatefulWidget {
 class _ServiceScreenState extends State<ServiceScreen> {
   List<Services> services = [];
   List<Services> filteredServices = [];
+  int _selectedIndex = 1; // Default index for Services
 
   @override
   void initState() {
@@ -30,13 +34,49 @@ class _ServiceScreenState extends State<ServiceScreen> {
   }
 
   void filterSearch(String query) {
-    List<Services> filtered = services
-        .where((service) =>
-            service.serviceName.toLowerCase().contains(query.toLowerCase()))
-        .toList();
     setState(() {
-      filteredServices = filtered;
+      filteredServices = services
+          .where((service) =>
+              service.serviceName.toLowerCase().contains(query.toLowerCase()))
+          .toList();
     });
+  }
+
+  void _onItemTapped(int index) {
+    switch (index) {
+      case 0: // Home → Redirect to Dashboard
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => DashboardScreen()),
+        );
+        break;
+      case 1: // Bookings → Show Alert
+      case 2: // Chats → Show Alert
+        _showComingSoonDialog();
+        break;
+      case 3: // Profile → Open Account Fragment
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AccountFragment()),
+        );
+        break;
+    }
+  }
+
+  void _showComingSoonDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Coming Soon"),
+        content: Text("This feature will be available in future updates."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("OK"),
+          )
+        ],
+      ),
+    );
   }
 
   @override
@@ -66,7 +106,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   child: TextField(
-                    onChanged: (value) => filterSearch(value),
+                    onChanged: filterSearch,
                     decoration: InputDecoration(
                       hintText: "Search Services...",
                       prefixIcon: Icon(Icons.search),
@@ -80,7 +120,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
             ),
           ),
 
-          // Scrollable ListView
+          // Scrollable ListView (Services List)
           Expanded(
             child: filteredServices.isEmpty
                 ? Center(child: CircularProgressIndicator())
@@ -98,7 +138,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
                           );
                         },
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                           child: Card(
                             elevation: 1,
                             shape: RoundedRectangleBorder(
@@ -140,6 +181,10 @@ class _ServiceScreenState extends State<ServiceScreen> {
                   ),
           ),
         ],
+      ),
+      bottomNavigationBar: CustomBottomNav(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }

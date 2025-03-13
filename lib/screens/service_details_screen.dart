@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as rootBundle;
 import '../models/services_details.dart';
+import '../utils/widgets.dart'; // Custom bottom navigation bar
+import '../fragments/account_fragment.dart';
+import 'dashboard_screen.dart';
 
 class ServiceDetailsScreen extends StatefulWidget {
   @override
@@ -11,6 +14,7 @@ class ServiceDetailsScreen extends StatefulWidget {
 class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
   List<ServicesDetails> servicesDetails = [];
   List<ServicesDetails> filteredServices = [];
+  int _selectedIndex = 1; // Default index for Services
 
   @override
   void initState() {
@@ -29,13 +33,49 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
   }
 
   void filterSearch(String query) {
-    List<ServicesDetails> filtered = servicesDetails
-        .where((service) =>
-            service.serviceName.toLowerCase().contains(query.toLowerCase()))
-        .toList();
     setState(() {
-      filteredServices = filtered;
+      filteredServices = servicesDetails
+          .where((service) =>
+              service.serviceName.toLowerCase().contains(query.toLowerCase()))
+          .toList();
     });
+  }
+
+  void _onItemTapped(int index) {
+    switch (index) {
+      case 0: // Home → Redirect to Dashboard
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => DashboardScreen()),
+        );
+        break;
+      case 1: // Bookings → Show Alert
+      case 2: // Chats → Show Alert
+        _showComingSoonDialog();
+        break;
+      case 3: // Profile → Open Account Fragment
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AccountFragment()),
+        );
+        break;
+    }
+  }
+
+  void _showComingSoonDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Coming Soon"),
+        content: Text("This feature will be available in future updates."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("OK"),
+          )
+        ],
+      ),
+    );
   }
 
   @override
@@ -51,11 +91,8 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
               children: [
                 AppBar(
                   title: Text(
-                    "Category",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 25,
-                    ),
+                    "Service Providers",
+                    style: TextStyle(fontWeight: FontWeight.w900, fontSize: 25),
                   ),
                   centerTitle: true,
                   leading: IconButton(
@@ -79,7 +116,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   child: TextField(
-                    onChanged: (value) => filterSearch(value),
+                    onChanged: filterSearch,
                     decoration: InputDecoration(
                       hintText: "Search Services...",
                       prefixIcon: Icon(Icons.search),
@@ -104,15 +141,15 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
                       return Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         child: Card(
-                          elevation: 2, // Adds slight shadow
+                          elevation: 2,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Container(
-                            height: 200, // Fixed height for each card
+                            height: 200,
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: Colors.grey[200], // Light grey background
+                              color: Colors.grey[200],
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
@@ -123,12 +160,12 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
                                   borderRadius: BorderRadius.circular(10),
                                   child: Image.asset(
                                     service.imagePath,
-                                    width: 90, // Fixed width
-                                    height:120, // Fixed height
+                                    width: 90,
+                                    height: 120,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
-                                SizedBox(width: 16), // Space between image and text
+                                SizedBox(width: 16),
 
                                 // Right Side - Details
                                 Expanded(
@@ -200,6 +237,10 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
                   ),
           ),
         ],
+      ),
+      bottomNavigationBar: CustomBottomNav(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }
