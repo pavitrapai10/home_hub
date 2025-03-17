@@ -102,6 +102,17 @@ class _ServiceScreenState extends State<ServiceScreen> {
                       Navigator.pop(context);
                     },
                   ),
+                   actions: [
+                    IconButton(
+                      icon: Icon(Icons.sort_by_alpha),
+                      onPressed: () {
+                        setState(() {
+                          filteredServices.sort(
+                              (a, b) => a.serviceName.compareTo(b.serviceName));
+                        });
+                      },
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -130,13 +141,14 @@ class _ServiceScreenState extends State<ServiceScreen> {
                       final service = filteredServices[index];
                       return GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ServiceDetailsScreen(),
-                            ),
-                          );
-                        },
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ServiceDetailsScreen(service: service),
+    ),
+  );
+},
+
                         child: Padding(
                           padding:
                               EdgeInsets.symmetric(horizontal: 10, vertical: 6),

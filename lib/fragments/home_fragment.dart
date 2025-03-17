@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import '../models/customer_review_model.dart';
+import '../components/customer_review_component.dart';
 
 class HomeFragment extends StatelessWidget {
+  final PageController reviewPagesController = PageController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,6 +59,7 @@ class HomeFragment extends StatelessWidget {
             categorySection("Home Services", ['Plumber', 'Electrician', 'Painting', 'Carpenter', 'Cleaning']),
             categorySection("Home Construction", ['Construction', 'Architects', 'Interior Design', 'Furniture']),
             categorySection("Popular Services", ['Service 1', 'Service 2', 'Service 3', 'Service 4']),
+            buildCustomerReviewsSection(), // Added Customer Reviews Section
           ],
         ),
       ),
@@ -102,6 +107,32 @@ class HomeFragment extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  /// Customer Reviews Section
+  Widget buildCustomerReviewsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 32),
+        Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Text("What our customers say", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18)),
+        ),
+        SizedBox(height: 16),
+        SizedBox(
+          height: 117,
+          child: PageView.builder(
+            itemCount: customerReviews.length,
+            controller: reviewPagesController,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return CustomerReviewComponent(customerReviewModel: customerReviews[index]);
+            },
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import '../store/home_store.dart';
 import '../fragments/search_fragment.dart';
-import '../models/services_model.dart';
 import '../utils/images.dart';
 import 'notification_screen.dart';
-import 'services_screen.dart';
+import 'service_details_screen.dart';
 import '../fragments/account_fragment.dart';
 import '../models/home_construction_model.dart';
 import '../utils/widgets.dart';
+import '../models/services_list.dart';
+import '../fragments/home_fragment.dart';
+import 'services_screen.dart';
+import '../models/common_model.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -16,66 +19,45 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final HomeStore homeStore = HomeStore();
-
   int _selectedIndex = 0;
-  int? selectedServiceIndex;
-  int? selectedConstructionIndex;
 
   final List<Widget> _screens = [
-    Placeholder(), 
-    Placeholder(), 
-    Placeholder(), 
-    AccountFragment(), 
+    Placeholder(),
+    Placeholder(),
+    Placeholder(),
+    AccountFragment(),
   ];
 
   void _onItemTapped(int index) {
-  setState(() {
-    _selectedIndex = index;
-  });
-}
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+ final List<CommonModel> serviceProviders = [
+  CommonModel.withImage("Plumbers", "assets/images/plumber.jpg"),
+  CommonModel.withImage("Electricians", "assets/images/electrician.jpg"),
+  CommonModel.withImage("Painters", "assets/images/painter.jpg"),
+  CommonModel.withImage("Carpenters", "assets/images/carpenter.jpg"),
+  CommonModel.withImage("Home Cleaning", "assets/images/home_cleaner.jpg"),
+  CommonModel.withImage("Car Washers", "assets/images/painter1.jpg"),
+  CommonModel.withImage("Car Repairing", "assets/images/electrician.jpg"),
+];
+final List<CommonModel> homeServices = [
+  CommonModel.withoutImage("Plumbers", Icon(Icons.plumbing, size: 35)),
+  CommonModel.withoutImage("Electricians", Icon(Icons.electrical_services, size: 35)),
+  CommonModel.withoutImage("Painters", Icon(Icons.format_paint, size: 35)),
+  CommonModel.withoutImage("Carpenters", Icon(Icons.chair, size: 35)),
+  CommonModel.withoutImage("Home Cleaning", Icon(Icons.cleaning_services, size: 35)),
+  CommonModel.withoutImage("Car Washers", Icon(Icons.local_car_wash, size: 35)),
+  CommonModel.withoutImage("Car Repairing", Icon(Icons.car_repair, size: 35)),
+];
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            GestureDetector(
-              onTap: () {
-                print("Menu Clicked");
-              },
-              child: Image.asset(
-                new_splash_logo,
-                height: 40,
-              ),
-            ),
-            SizedBox(width: 8),
-            Text(
-              'Te Resuelvo',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            Spacer(),
-            IconButton(
-              icon: Icon(Icons.notifications, color: Colors.black),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NotificationScreen()),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-
+      appBar: _buildAppBar(context),
       body: _selectedIndex == 0
           ? SingleChildScrollView(
               padding: EdgeInsets.only(bottom: 20),
@@ -83,88 +65,109 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  //search bar dropdown
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-                    child: Row(
-                      children: [
-                        Expanded(child: SearchFragment()),
-                        SizedBox(width: 10),
-                        DropdownButton<String>(
-                          value: homeStore.selectedCategory.isNotEmpty
-                              ? homeStore.selectedCategory
-                              : 'Choose Category',
-                          onChanged: (newValue) {
-                            if (newValue != 'Choose Category') {
-                              homeStore.setSelectedCategory(newValue!);
-                            }
-                          },
-                          underline: SizedBox(),
-                          items: homeStore.categories.map((category) {
-                            return DropdownMenuItem<String>(
-                              value: category,
-                              child: Text(category),
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  //Banner 
-                  SizedBox(
-                    height: 150,
-                    child: PageView(
-                      children: homeStore.banners.map((banner) {
-                        return Image.asset(banner, fit: BoxFit.cover, width: double.infinity);
-                      }).toList(),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-
-                
-                  _buildIconList("Home Services", serviceProviders.sublist(0, 5)),
-
+                  _buildSearchBar(),
+                  _buildBanner(),
+                  _buildIconList("Home Services", homeServices),
                   _buildHomeConstructionSection(),
-
                   _buildImageList("Popular Services"),
-
+                  HomeFragment().buildCustomerReviewsSection(),
                   SizedBox(height: 20),
                 ],
               ),
             )
           : _selectedIndex == 3
-              ? AccountFragment() 
-            
-              : Center(child: Text("Coming Soon")), 
-
+              ? AccountFragment()
+              : Center(child: Text("Coming Soon")),
       bottomNavigationBar: CustomBottomNav(
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,
-    
       ),
     );
   }
 
- 
-  Widget _buildIconList(String title, List<ServicesModel> services) {
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      title: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              print("Menu Clicked");
+            },
+            child: Image.asset(new_splash_logo, height: 40),
+          ),
+          SizedBox(width: 8),
+          Text(
+            'Te Resuelvo',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          Spacer(),
+          IconButton(
+            icon: Icon(Icons.notifications, color: Colors.black),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen()));
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+      child: Row(
+        children: [
+          Expanded(child: SearchFragment()),
+          SizedBox(width: 10),
+          DropdownButton<String>(
+            value: homeStore.selectedCategory.isNotEmpty ? homeStore.selectedCategory : 'Choose Category',
+            onChanged: (newValue) {
+              if (newValue != 'Choose Category') {
+                homeStore.setSelectedCategory(newValue!);
+              }
+            },
+            underline: SizedBox(),
+            items: homeStore.categories.map((category) {
+              return DropdownMenuItem<String>(
+                value: category,
+                child: Text(category),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBanner() {
+    return SizedBox(
+      height: 150,
+      child: PageView(
+        children: homeStore.banners.map((banner) {
+          return Image.asset(banner, fit: BoxFit.cover, width: double.infinity);
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildIconList(String title, List<CommonModel> services) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ServiceScreen()),
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceScreen()));
                 },
-                child: Text("View All", style: TextStyle(fontSize: 14, color: Colors.blue)),
+                child: Text("View All", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.blue)),
               ),
             ],
           ),
@@ -176,26 +179,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
             itemCount: services.length,
             itemBuilder: (context, index) {
               var item = services[index];
+
               return GestureDetector(
                 onTap: () {
-                  setState(() {
-                    selectedServiceIndex = index;
-                  });
-                },
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 12),
-                      padding: EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: selectedServiceIndex == index ? Colors.black : Colors.grey[200],
-                      ),
-                      child: Icon(item.serviceIcon, color: selectedServiceIndex == index ? Colors.white : Colors.black, size: 30),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ServiceDetailsScreen(service: Services(serviceName: item.title, imagePath: "")),
                     ),
-                    SizedBox(height: 5),
-                    Text(item.serviceName, style: TextStyle(fontSize: 14)),
-                  ],
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    children: [
+                      item.iconPath ?? Icon(Icons.home_repair_service, size: 40, color: Colors.grey),
+                      SizedBox(height: 5),
+                      Text(item.title, style: TextStyle(fontSize: 14)),
+                    ],
+                  ),
                 ),
               );
             },
@@ -205,17 +207,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
- 
-  Widget _buildHomeConstructionSection() {
+Widget _buildHomeConstructionSection() {
+  return _buildIconList("Home Construction", homeConstruction); 
+}
+
+
+
+
+ Widget _buildImageList(String title) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Home Construction", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -223,42 +231,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   MaterialPageRoute(builder: (context) => ServiceScreen()),
                 );
               },
-              child: Text("View All", style: TextStyle(fontSize: 14, color: Colors.blue)),
+              child: Text("View All", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.blue)),
             ),
           ],
         ),
       ),
       SizedBox(
-        height: 100,
+        height: 160,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: homeConstruction.length,
+          itemCount: serviceProviders.length,
           itemBuilder: (context, index) {
-            var item = homeConstruction[index];
+            var item = serviceProviders[index];
+
             return GestureDetector(
               onTap: () {
-                setState(() {
-                  selectedConstructionIndex = index;
-                });
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ServiceDetailsScreen(
+                      service: Services(serviceName: item.title, imagePath: item.imagePath ?? ""),
+                    ),
+                  ),
+                );
               },
               child: Column(
                 children: [
                   Container(
+                    width: 130,
+                    height: 120, // Fixed height for image
                     margin: EdgeInsets.symmetric(horizontal: 12),
-                    padding: EdgeInsets.all(15),
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: selectedConstructionIndex == index ? Colors.black : Colors.grey[200],
-                    ),
-                    child: IconTheme(
-                      data: IconThemeData(
-                        color: selectedConstructionIndex == index ? Colors.white : Colors.black,
-                      ),
-                      child: item.iconPath!,
+                      borderRadius: BorderRadius.circular(10),
+                      image: item.imagePath != null && item.imagePath!.isNotEmpty
+                          ? DecorationImage(image: AssetImage(item.imagePath!), fit: BoxFit.cover)
+                          : null, // No image if null
+                      color: item.imagePath == null || item.imagePath!.isEmpty ? Colors.grey[300] : null,
                     ),
                   ),
                   SizedBox(height: 5),
-                  Text(item.title, style: TextStyle(fontSize: 14)),
+                  Text(item.title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                 ],
               ),
             );
@@ -268,55 +280,4 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ],
   );
 }
-
-
-  Widget _buildImageList(String title) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ServiceScreen()),
-                  );
-                },
-                child: Text("View All", style: TextStyle(fontSize: 14, color: Colors.blue)),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 160,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: serviceProviders.length,
-            itemBuilder: (context, index) {
-              var item = serviceProviders[index];
-              return Container(
-                width: 130,
-                margin: EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: AssetImage(item.serviceImage),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: Center(
-                  child: Text(item.serviceName, style: TextStyle(color: Colors.white)),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
 }

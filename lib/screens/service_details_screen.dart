@@ -5,12 +5,18 @@ import '../models/services_details.dart';
 import '../utils/widgets.dart'; // Custom bottom navigation bar
 import '../fragments/account_fragment.dart';
 import 'dashboard_screen.dart';
+import '../models/services_list.dart';
 
 class ServiceDetailsScreen extends StatefulWidget {
+  final Services service;
+
+
+  ServiceDetailsScreen({required this.service});
+
+
   @override
   _ServiceDetailsScreenState createState() => _ServiceDetailsScreenState();
 }
-
 class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
   List<ServicesDetails> servicesDetails = [];
   List<ServicesDetails> filteredServices = [];

@@ -6,9 +6,12 @@ class CommonModel {
   Widget? iconPath;
   bool? isSelected;
 
-  CommonModel(this.title, this.imagePath, this.iconPath,{this.isSelected = false});
+  CommonModel(this.title, this.imagePath, this.iconPath, {this.isSelected = false});
 
-  CommonModel.withoutIcon(this.title, this.imagePath,{this.isSelected = false});
+  CommonModel.withoutIcon(this.title, this.imagePath, {this.isSelected = false});
 
-  CommonModel.withoutImage(this.title, this.iconPath,{this.isSelected = false});
+  CommonModel.withoutImage(this.title, this.iconPath, {this.isSelected = false});
+
+  // ✅ Add this new constructor for image-based services
+  CommonModel.withImage(this.title, this.imagePath, {this.isSelected = false});
 }
